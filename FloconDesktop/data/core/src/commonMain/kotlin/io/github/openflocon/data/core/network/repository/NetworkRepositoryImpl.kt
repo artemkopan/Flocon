@@ -22,6 +22,8 @@ import io.github.openflocon.domain.network.repository.NetworkRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import io.github.openflocon.domain.logs.Logger
+import io.github.openflocon.domain.logs.models.LogCategory
 
 class NetworkRepositoryImpl(
     private val dispatcherProvider: DispatcherProvider,
@@ -30,6 +32,7 @@ class NetworkRepositoryImpl(
     private val networkQualityLocalDataSource: NetworkQualityLocalDataSource,
     private val networkImageRepository: NetworkImageRepository,
     private val networkRemoteDataSource: NetworkRemoteDataSource,
+    private val logger: Logger,
 ) : NetworkRepository,
     NetworkMocksRepository,
     MessagesReceiverRepository,
@@ -89,19 +92,19 @@ class NetworkRepositoryImpl(
                     networkRemoteDataSource.getCallId(message)
                         ?.let {
                             val callId = it.floconCallId ?: run {
-                                println("cannot find floconCallId in message")
+                                logger.warn(LogCategory.NETWORK, "Cannot find floconCallId in message")
                                 return@let null
                             }
                             val request = networkLocalDataSource.getCall(
                                 deviceIdAndPackageName = deviceIdAndPackageName,
                                 callId = callId,
                             ) ?: run {
-                                println("cannot find request")
+                                logger.warn(LogCategory.NETWORK, "Cannot find request for callId: $callId")
                                 return@let null
                             }
 
                             val response = networkRemoteDataSource.getResponseData(message) ?: run {
-                                println("cannot decode response")
+                                logger.error(LogCategory.NETWORK, "Cannot decode response for callId: $callId")
                                 return@let null
                             }
                             toDomainForResponse(response = response, request = request)

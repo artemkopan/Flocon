@@ -68,10 +68,8 @@ class Logger(
         )
         logsRepository.addLog(logEntry)
         
-        // Also print to console for development
-        val deviceInfo = deviceId?.let { " [Device: $it]" } ?: ""
-        val exceptionInfo = exception?.let { " - ${it.message}" } ?: ""
-        println("${level.name} [${category.name}]$deviceInfo: $message$exceptionInfo")
+        // Log entry is stored in repository for UI display
+        // Console logging is handled by the data layer implementation if needed
     }
 }
 

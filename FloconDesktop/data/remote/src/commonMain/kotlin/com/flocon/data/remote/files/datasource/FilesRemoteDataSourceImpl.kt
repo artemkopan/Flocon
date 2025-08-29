@@ -29,10 +29,13 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
+import io.github.openflocon.domain.logs.Logger
+import io.github.openflocon.domain.logs.models.LogCategory
 
 class FilesRemoteDataSourceImpl(
     private val server: Server,
     private val json: Json,
+    private val logger: Logger,
 ) : FilesRemoteDataSource {
     private val getFilesResultReceived =
         MutableStateFlow<Set<FromDeviceFilesResultDomainModel>>(emptySet())
@@ -163,13 +166,13 @@ class FilesRemoteDataSourceImpl(
             return Success(files)
         } catch (e: TimeoutCancellationException) {
             // Ce bloc est exécuté si le timeout se produit
-            println("Timeout: Aucune réponse reçue pour la requête $requestId dans le délai imparti.")
+            logger.warn(LogCategory.NETWORK, "Timeout: No response received for request $requestId within timeout")
             // Tu peux ajouter ici d'autres logiques de gestion du timeout,
             // comme renvoyer une erreur à l'appelant, journaliser l'événement, etc.
             return Failure(e)
         } catch (e: Exception) {
             // Gère d'autres exceptions qui pourraient survenir
-            println("Une erreur inattendue est survenue : ${e.message}")
+            logger.error(LogCategory.NETWORK, "Unexpected error occurred during file operation", exception = e)
             return Failure(e)
         }
     }

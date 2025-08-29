@@ -204,8 +204,8 @@ private fun SettingsScreenPreview() {
         SettingsScreen(
             adbPathText = adbPath,
             onAdbPathChanged = { adbPath = it },
-            saveAdbPath = { println("Save ADB FilePathDomainModel: $adbPath") },
-            testAdbPath = { println("Test ADB FilePathDomainModel: $adbPath") },
+            saveAdbPath = { /* Preview: Save ADB path */ },
+            testAdbPath = { /* Preview: Test ADB path */ },
             modifier = Modifier.fillMaxSize(),
             needsAdbSetup = false,
             onClickLicenses = {},
@@ -221,8 +221,8 @@ private fun SettingsScreenPreview_needsAdbSetup() {
         SettingsScreen(
             adbPathText = adbPath,
             onAdbPathChanged = { adbPath = it },
-            saveAdbPath = { println("Save ADB FilePathDomainModel: $adbPath") },
-            testAdbPath = { println("Test ADB FilePathDomainModel: $adbPath") },
+            saveAdbPath = { /* Preview: Save ADB path */ },
+            testAdbPath = { /* Preview: Test ADB path */ },
             modifier = Modifier.fillMaxSize(),
             needsAdbSetup = true,
             onClickLicenses = {},

@@ -2,8 +2,13 @@ package io.github.openflocon.flocondesktop.common.ui
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import io.github.openflocon.domain.logs.Logger
+import io.github.openflocon.domain.logs.models.LogCategory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object JsonPrettyPrinter {
+object JsonPrettyPrinter : KoinComponent {
+    private val logger by inject<Logger>()
     // Configure a Json instance for pretty printing
     private val json =
         Json {
@@ -31,7 +36,7 @@ object JsonPrettyPrinter {
             json.encodeToString(JsonElement.serializer(), parsedJson)
         } catch (e: Exception) {
             // If parsing fails (e.g., not valid JSON), return the original string
-            println("Failed to pretty-print JSON: ${e.message}")
+            logger.warn(LogCategory.GENERAL, "Failed to pretty-print JSON", exception = e)
             jsonString
         }
     }

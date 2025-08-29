@@ -8,9 +8,16 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import kotlin.io.bufferedReader
-import kotlin.io.println
 import kotlin.io.readText
 import kotlin.use
+import io.github.openflocon.domain.logs.Logger
+import io.github.openflocon.domain.logs.models.LogCategory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+object AdbLogger : KoinComponent {
+    val logger by inject<Logger>()
+}
 
 actual fun localFindAdbPath(): String? {
     // 1. Check if 'adb' is already in the system PATH
@@ -21,19 +28,19 @@ actual fun localFindAdbPath(): String? {
                 .start()
         val exitCode = process.waitFor()
         if (exitCode == 0) {
-            println(" 'adb' found in system PATH.")
+            AdbLogger.logger.info(LogCategory.DEVICE_CONNECTION, "'adb' found in system PATH")
             return "adb" // It's in the PATH, so we can just use "adb"
         }
     } catch (e: IOException) {
-        println(" 'adb' not found in system PATH directly: ${e.message}")
+        AdbLogger.logger.warn(LogCategory.DEVICE_CONNECTION, "'adb' not found in system PATH directly", exception = e)
         // Fall through to search in SDK
     } catch (e: InterruptedException) {
         Thread.currentThread().interrupt()
-        println("Process interrupted while checking 'adb' in system PATH.")
+        AdbLogger.logger.warn(LogCategory.DEVICE_CONNECTION, "Process interrupted while checking 'adb' in system PATH")
     }
 
     // 2. Search in common Android SDK locations
-    println("Searching for 'adb' in common Android SDK locations...")
+    AdbLogger.logger.info(LogCategory.DEVICE_CONNECTION, "Searching for 'adb' in common Android SDK locations")
     val userHome = System.getProperty("user.home")
     val possibleSdkPaths =
         listOf(
@@ -101,7 +108,7 @@ actual fun askSerialToAllDevices(adbPath: String, command: String, serialVariabl
 private fun singleDeviceExecuteSystemCommand(adbPath: String, command: String): Either<Throwable, String> = try {
     val process = Runtime.getRuntime().exec("$adbPath $command")
     if(command.contains("reverse").not())
-        println("Executing command: $adbPath $command")
+        AdbLogger.logger.debug(LogCategory.DEVICE_CONNECTION, "Executing ADB command: $adbPath $command")
 
     val output = process.inputStream.bufferedReader().use { it.readText() }
     val error = process.errorStream.bufferedReader().use { it.readText() }
@@ -110,8 +117,8 @@ private fun singleDeviceExecuteSystemCommand(adbPath: String, command: String): 
 
 
     if(command.contains("reverse").not()) {
-        println("command result success : $output")
-        println("command result error : $error")
+        AdbLogger.logger.debug(LogCategory.DEVICE_CONNECTION, "ADB command success result", details = output)
+        AdbLogger.logger.debug(LogCategory.DEVICE_CONNECTION, "ADB command error result", details = error)
     }
 
     if (exitCode == 0) {
@@ -146,7 +153,7 @@ private fun listConnectedDevices(adbPath: String): List<String> {
         }
         process.waitFor() // Attendre la fin du processus
     } catch (e: Exception) {
-        println("Error executing adb devices: ${e.message}")
+        AdbLogger.logger.error(LogCategory.DEVICE_CONNECTION, "Error executing adb devices", exception = e)
     }
     return devices
 }

@@ -27,8 +27,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration.Companion.seconds
+import io.github.openflocon.domain.logs.Logger
+import io.github.openflocon.domain.logs.models.LogCategory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class ServerJvm : Server {
+class ServerJvm : Server, KoinComponent {
+    private val logger by inject<Logger>()
     private val _receivedMessages = MutableSharedFlow<FloconIncomingMessageDataModel>()
     override val receivedMessages = _receivedMessages.asSharedFlow()
 
@@ -54,7 +59,7 @@ class ServerJvm : Server {
                 }
                 routing {
                     webSocket("/") {
-                        println("WebSocket connection established!")
+                        logger.info(LogCategory.WEBSOCKET_CONNECTION, "WebSocket connection established")
                         val currentSession = this // Store the current session to use in finally block
 
                         // Use a try-catch block to handle the exception when the channel is closed.
@@ -63,7 +68,7 @@ class ServerJvm : Server {
                                 when (frame) {
                                     is Frame.Text -> {
                                         val receivedText = frame.readText()
-                                        println("<---- Received raw message: $receivedText")
+                                        logger.debug(LogCategory.WEBSOCKET_MESSAGE, "Received raw message", details = receivedText)
                                         try {
                                             val floconIncomingMessageDataModel =
                                                 Json.decodeFromString<FloconIncomingMessageDataModel>(
@@ -81,14 +86,14 @@ class ServerJvm : Server {
                                             _receivedMessages.emit(floconIncomingMessageDataModel)
                                             // Access other fields of floconMessage as needed
                                         } catch (e: Exception) {
-                                            println("Error parsing JSON message: ${e.message}")
+                                            logger.error(LogCategory.WEBSOCKET_ERROR, "Error parsing JSON message", exception = e)
                                             // Optionally send an error back to the client
                                             // outgoing.send(Frame.Text("Error: Could not parse message as FloconIncomingMessageDataModel. ${e.message}"))
                                         }
                                     }
 
                                     is Frame.Binary -> {
-                                        println("Received binary message (not printed): ${frame.data.size} bytes")
+                                        logger.debug(LogCategory.WEBSOCKET_MESSAGE, "Received binary message: ${frame.data.size} bytes")
                                     }
 
                                     is Frame.Close -> {
@@ -96,34 +101,34 @@ class ServerJvm : Server {
                                         _activeDevices.update { map ->
                                             map.filterValues { it != currentSession }
                                         }
-                                        println("WebSocket connection closed: ${reason?.message}")
+                                        logger.info(LogCategory.WEBSOCKET_CONNECTION, "WebSocket connection closed", details = reason?.message)
                                     }
 
                                     is Frame.Ping -> {
-                                        println("Received Ping frame.")
+                                        logger.debug(LogCategory.WEBSOCKET_MESSAGE, "Received Ping frame")
                                     }
 
                                     is Frame.Pong -> {
-                                        println("Received Pong frame.")
+                                        logger.debug(LogCategory.WEBSOCKET_MESSAGE, "Received Pong frame")
                                     }
                                 }
                             }
                         } catch (e: ClosedReceiveChannelException) {
-                            println("WebSocket connection closed (channel closed): ${closeReason.await()}")
+                            logger.info(LogCategory.WEBSOCKET_CONNECTION, "WebSocket connection closed (channel closed)", details = closeReason.await().toString())
                         } catch (e: Exception) {
-                            println("WebSocket error: ${e.message}")
+                            logger.error(LogCategory.WEBSOCKET_ERROR, "WebSocket error", exception = e)
                         } finally {
                             // This block will always be executed when the coroutine ends,
                             // whether the connection was closed cleanly or due to an error.
                             _activeDevices.update { map ->
                                 map.filterValues { it != currentSession }
                             }
-                            println("WebSocket : Session removed from active sessions.")
+                            logger.info(LogCategory.WEBSOCKET_CONNECTION, "Session removed from active sessions")
                         }
                     }
                 }
             }.also { this.server = it }
-        println("server started on $port")
+        logger.info(LogCategory.SERVER, "Server started on port $port")
 
         try {
             server.start(wait = false)
@@ -153,16 +158,16 @@ class ServerJvm : Server {
                         message,
                     ) // Assuming you have a serializer for FloconIncomingMessageDataModel
                 session.outgoing.send(Frame.Text(jsonMessage))
-                println("------> Message sent to client: $message")
+                logger.debug(LogCategory.WEBSOCKET_MESSAGE, "Message sent to client", details = message.toString())
             } catch (e: Exception) {
-                println("Error sending message to client: ${e.message}")
+                logger.error(LogCategory.WEBSOCKET_ERROR, "Error sending message to client", exception = e)
                 // The session might have closed unexpectedly
                 _activeDevices.update { map ->
                     map.filterKeys { it != deviceIdAndPackageName }
                 }
             }
         } else {
-            println("Target session is no longer active. deviceId=$deviceIdAndPackageName, message=$message")
+            logger.warn(LogCategory.WEBSOCKET_CONNECTION, "Target session is no longer active", details = "deviceId=$deviceIdAndPackageName, message=$message")
         }
     }
 
