@@ -8,7 +8,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(23)
 
     compilerOptions {
         // Pour Kotlin 1.9+

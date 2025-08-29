@@ -11,8 +11,7 @@ interface ViewModelEvent<E> {
 
     val events: Flow<E>
 
-    context(vm: ViewModel)
-    fun sendEvents(vararg event: E)
+    fun sendEvents(vm: ViewModel, vararg event: E)
 
     interface Event
 }
@@ -22,8 +21,7 @@ class ViewModelEventImpl<E : ViewModelEvent.Event> : ViewModelEvent<E> {
     private val _events = Channel<E>()
     override val events: Flow<E> = _events.receiveAsFlow()
 
-    context(vm: ViewModel)
-    override fun sendEvents(vararg event: E) {
+    override fun sendEvents(vm: ViewModel, vararg event: E) {
         vm.viewModelScope.launch {
             event.forEach { _events.send(it) }
         }

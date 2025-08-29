@@ -8,6 +8,7 @@ import io.github.openflocon.domain.deeplink.deeplinkModule
 import io.github.openflocon.domain.device.deviceModule
 import io.github.openflocon.domain.files.filesModule
 import io.github.openflocon.domain.images.imagesModule
+import io.github.openflocon.domain.logs.logsModule
 import io.github.openflocon.domain.messages.messagesModule
 import io.github.openflocon.domain.network.networkModule
 import io.github.openflocon.domain.settings.settingsModule
@@ -25,6 +26,7 @@ val domainModule = module {
         deviceModule,
         filesModule,
         imagesModule,
+        logsModule,
         networkModule,
         settingsModule,
         sharedPreferencesModule,

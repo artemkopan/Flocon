@@ -8,6 +8,7 @@ import io.github.openflocon.data.local.deeplink.deeplinkModule
 import io.github.openflocon.data.local.device.deviceModule
 import io.github.openflocon.data.local.files.filesModule
 import io.github.openflocon.data.local.images.imagesModule
+import io.github.openflocon.data.local.logs.logsLocalModule
 import io.github.openflocon.data.local.network.networkModule
 import io.github.openflocon.data.local.sharedpreference.sharedPreferenceModule
 import io.github.openflocon.data.local.table.tableModule
@@ -23,6 +24,7 @@ val dataLocalModule = module {
         deviceModule,
         filesModule,
         imagesModule,
+        logsLocalModule,
         networkModule,
         sharedPreferenceModule,
         tableModule

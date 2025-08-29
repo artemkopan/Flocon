@@ -139,6 +139,12 @@ fun buildLeftPanelState(selectedId: String?) = LeftPanelState(
                 item(SubScreen.Deeplinks, selectedId = selectedId),
             ),
         ),
+        LeftPannelSection(
+            title = "Debug",
+            items = listOf(
+                item(SubScreen.Logs, selectedId = selectedId),
+            ),
+        ),
     ),
 )
 
