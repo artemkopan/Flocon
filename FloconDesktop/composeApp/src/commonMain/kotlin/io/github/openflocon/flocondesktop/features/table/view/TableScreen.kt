@@ -172,7 +172,7 @@ fun TableDetailView(modifier: Modifier = Modifier, state: TableRowUiModel) {
     SelectionContainer(
         modifier
             .background(FloconTheme.colorPalette.background)
-            .verticalScroll(scrollState) // Rendre le contenu défilable
+            .verticalScroll(scrollState) // Make the content scrollable
             .padding(all = 18.dp),
     ) {
         Column(

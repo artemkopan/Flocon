@@ -75,13 +75,13 @@ class QueryDatabaseRemoteDataSourceImpl(
                 }
             return Success(result.response)
         } catch (e: TimeoutCancellationException) {
-            // Ce bloc est exécuté si le timeout se produit
+            // This block is executed if the timeout occurs
             logger.warn(LogCategory.NETWORK, "Timeout: No response received for database query request $requestId within timeout")
-            // Tu peux ajouter ici d'autres logiques de gestion du timeout,
-            // comme renvoyer une erreur à l'appelant, journaliser l'événement, etc.
+            // You can add other timeout handling logic here,
+            // such as returning an error to the caller, logging the event, etc.
             return Failure(e)
         } catch (e: Exception) {
-            // Gère d'autres exceptions qui pourraient survenir
+            // Handle other exceptions that could occur
             logger.error(LogCategory.NETWORK, "Unexpected error occurred during database query", exception = e)
             return Failure(e)
         }

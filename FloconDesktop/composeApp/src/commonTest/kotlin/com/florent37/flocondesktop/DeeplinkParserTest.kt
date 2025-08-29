@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 class DeeplinkParserTest {
 
-    // Cas de test standard avec texte et champs
+    // Standard test case with text and fields
     @Test
     fun testInterleavedTextAndTextFields() {
         val input = "text[value1]tototot[value2]tata"
@@ -22,7 +22,7 @@ class DeeplinkParserTest {
         assertEquals(expected, actual)
     }
 
-    // Cas où la chaîne commence et se termine par un champ
+    // Case where the string starts and ends with a field
     @Test
     fun testStartsAndEndsWithTextField() {
         val input = "[first]no text at start[second]"
@@ -35,7 +35,7 @@ class DeeplinkParserTest {
         assertEquals(expected, actual)
     }
 
-    // Cas où la chaîne ne contient que du texte
+    // Case where the string contains only text
     @Test
     fun testOnlyText() {
         val input = "only plain text here"
@@ -46,7 +46,7 @@ class DeeplinkParserTest {
         assertEquals(expected, actual)
     }
 
-    // Cas où la chaîne ne contient qu'un champ
+    // Case where the string contains only one field
     @Test
     fun testOnlyTextField() {
         val input = "[onlyfield]"
@@ -57,7 +57,7 @@ class DeeplinkParserTest {
         assertEquals(expected, actual)
     }
 
-    // Cas de la chaîne vide
+    // Case of empty string
     @Test
     fun testEmptyString() {
         val input = ""
@@ -66,26 +66,26 @@ class DeeplinkParserTest {
         assertEquals(expected, actual)
     }
 
-    // Cas où un champ est vide (ex: [])
+    // Case where a field is empty (e.g.: [])
     @Test
     fun testEmptyPlaceholder() {
         val input = "before[]after"
         val expected = listOf(
             DeeplinkPart.Text("before"),
-            DeeplinkPart.TextField(""), // Placeholder vide
+            DeeplinkPart.TextField(""), // Empty placeholder
             DeeplinkPart.Text("after"),
         )
         val actual = parseDeeplinkString(input)
         assertEquals(expected, actual)
     }
 
-    // Cas avec des caractères spéciaux à l'intérieur des crochets
+    // Case with special characters inside brackets
     @Test
     fun testSpecialCharactersInPlaceholder() {
         val input = "path[param/1?id=abc]suffix"
         val expected = listOf(
             DeeplinkPart.Text("path"),
-            DeeplinkPart.TextField("param/1?id=abc"), // Contient des caractères spéciaux
+            DeeplinkPart.TextField("param/1?id=abc"), // Contains special characters
             DeeplinkPart.Text("suffix"),
         )
         val actual = parseDeeplinkString(input)

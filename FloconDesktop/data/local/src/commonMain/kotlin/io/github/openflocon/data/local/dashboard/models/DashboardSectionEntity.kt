@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
             entity = DashboardEntity::class,
             parentColumns = ["dashboardId"],
             childColumns = ["dashboardId"],
-            onDelete = ForeignKey.CASCADE, // Si un dashboard est supprimé, ses sections le sont aussi
+            onDelete = ForeignKey.CASCADE, // If a dashboard is deleted, its sections are also deleted
         ),
     ],
     indices = [

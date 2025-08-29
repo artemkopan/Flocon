@@ -187,9 +187,9 @@ fun MockEditorScreen(
                     placeholder = defaultPlaceHolder("0"),
                     containerColor = FloconTheme.colorPalette.panel,
                     onValueChange = { newValue ->
-                        // On vérifie si la nouvelle valeur est vide ou si elle contient uniquement des chiffres
+                        // Check if the new value is empty or contains only digits
                         if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
-                            // Si c'est le cas, on met à jour l'état
+                            // If so, update the state
                             val newDelay = newValue.toLongOrNull() ?: 0L
                             mock = mock.copy(delay = newDelay)
                         }

@@ -151,7 +151,7 @@ private fun listConnectedDevices(adbPath: String): List<String> {
                 devices.add(line.split("\t")[0])
             }
         }
-        process.waitFor() // Attendre la fin du processus
+        process.waitFor() // Wait for the process to finish
     } catch (e: Exception) {
         AdbLogger.logger.error(LogCategory.DEVICE_CONNECTION, "Error executing adb devices", exception = e)
     }

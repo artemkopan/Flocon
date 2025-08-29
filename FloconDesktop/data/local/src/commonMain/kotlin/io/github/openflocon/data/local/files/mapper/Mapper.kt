@@ -25,7 +25,7 @@ internal fun pathFromLocal(path: String): FilePathDomainModel = if (path.startsW
 fun FileEntity.toDomainModel(): FileDomainModel = FileDomainModel(
     name = name,
     isDirectory = isDirectory,
-    path = pathFromLocal(path), // Utilisation de pathFromLocal
+    path = pathFromLocal(path), // Using pathFromLocal
     size = size,
     lastModified = Instant.fromEpochMilliseconds(lastModifiedTimestamp),
 )

@@ -27,7 +27,7 @@ class SettingsViewModel(
 
     init {
         viewModelScope.launch {
-            // Utiliser GlobalScope ici pour la simplicité de l'exemple, mais préférez un scope dédié
+            // Using GlobalScope here for simplicity of the example, but prefer a dedicated scope
             settingsRepository.adbPath.collect { path ->
                 path?.let { _adbPathInput.value = it }
             }

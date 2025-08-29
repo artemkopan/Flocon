@@ -16,10 +16,10 @@ fun extractDomain(url: String): String {
     // Parse l'URL en un objet Url
     val parsedUrl = Url(url)
 
-    // Utilise host pour le domaine et encodedPathAndQuery pour le chemin
+    // Use host for domain and encodedPathAndQuery for path
     val domainAndPath = parsedUrl.host
 
-    // Le code ci-dessous pourrait aussi fonctionner, mais host est plus précis pour le domaine
+    // The code below could also work, but host is more precise for domain
     // return parsedUrl.hostWithPort + parsedUrl.fullPath
     return domainAndPath.removePrefix("www.")
 }
@@ -28,10 +28,10 @@ fun extractDomainAndPath(url: String): String {
     // Parse l'URL en un objet Url
     val parsedUrl = Url(url)
 
-    // Utilise host pour le domaine et encodedPathAndQuery pour le chemin
+    // Use host for domain and encodedPathAndQuery for path
     val domainAndPath = parsedUrl.host + parsedUrl.encodedPathAndQuery
 
-    // Le code ci-dessous pourrait aussi fonctionner, mais host est plus précis pour le domaine
+    // The code below could also work, but host is more precise for domain
     // return parsedUrl.hostWithPort + parsedUrl.fullPath
     return domainAndPath.removePrefix("www.")
 }

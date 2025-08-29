@@ -14,3 +14,4 @@
 .cxx
 local.properties
 /grpc-server/grpc-go/
+/.history/

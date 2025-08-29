@@ -382,7 +382,7 @@ private fun NetworkDetailViewPreview() {
                 ),
                 graphQlSection = null,
             ),
-            modifier = Modifier.padding(16.dp), // Padding pour la preview
+            modifier = Modifier.padding(16.dp), // Padding for the preview
             onAction = {},
         )
     }

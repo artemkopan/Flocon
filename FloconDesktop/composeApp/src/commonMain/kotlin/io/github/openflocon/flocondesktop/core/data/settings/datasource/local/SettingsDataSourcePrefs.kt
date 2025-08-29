@@ -7,7 +7,7 @@ import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.coroutines.toFlowSettings
 import kotlinx.coroutines.flow.Flow
 
-// Expect class pour obtenir les Settings de manière multiplateforme
+// Expect class to obtain Settings in a multiplatform way
 expect fun createSettings(): ObservableSettings
 
 class SettingsDataSourcePrefs : SettingsDataSource {

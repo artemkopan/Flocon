@@ -66,11 +66,11 @@ internal fun toSharedPreferenceValuesResponseDomain(data: SharedPreferenceValues
 )
 
 private fun decodeStringToSet(encodedString: String): Set<String> {
-    // Si la chaîne est vide, cela signifie que le set original était vide.
+    // If the string is empty, it means the original set was empty.
     if (encodedString.isEmpty()) {
         return emptySet()
     }
-    // Utilise split pour diviser la chaîne par le délimiteur,
-    // puis toSet() pour convertir la liste résultante en un Set.
+    // Use split to divide the string by the delimiter,
+    // then toSet() to convert the resulting list into a Set.
     return encodedString.split("[_*+*_]").toSet()
 }

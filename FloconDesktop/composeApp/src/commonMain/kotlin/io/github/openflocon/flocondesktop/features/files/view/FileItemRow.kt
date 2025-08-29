@@ -63,7 +63,7 @@ fun FileItemRow(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Nom du fichier/dossier
+            // File/folder name
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = file.name,
@@ -72,7 +72,7 @@ fun FileItemRow(
                     color = FloconTheme.colorPalette.onSurface,
                     overflow = TextOverflow.Ellipsis,
                 )
-                // Informations additionnelles (taille, date de modification)
+                // Additional information (size, modification date)
                 // if (!file.isDirectory) {
                 //    Text(
                 //        text = "${viewModel.formatFileSize(file.size)}",
@@ -87,7 +87,7 @@ fun FileItemRow(
                 // )
             }
 
-            // Flèche si c'est un dossier (pour indiquer qu'on peut y naviguer)
+            // Arrow if it's a folder (to indicate that we can navigate into it)
             if (file.isDirectory) {
                 Icon(
                     imageVector = Icons.Outlined.ChevronRight,

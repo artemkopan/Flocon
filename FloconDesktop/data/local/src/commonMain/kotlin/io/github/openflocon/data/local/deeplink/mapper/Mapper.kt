@@ -13,9 +13,9 @@ fun DeeplinkEntity.toDomainModel(): DeeplinkDomainModel = DeeplinkDomainModel(
 fun DeeplinkDomainModel.toEntity(
     deviceIdAndPackageName: DeviceIdAndPackageNameDomainModel,
 ): DeeplinkEntity {
-    // Note: L'ID sera généré automatiquement par Room lors de l'insertion,
-    // donc nous n'avons pas besoin de le spécifier ici si nous faisons une nouvelle insertion.
-    // Si vous mettez à jour une entité existante, vous devrez peut-être passer l'ID.
+    // Note: The ID will be generated automatically by Room during insertion,
+    // so we don't need to specify it here if we're doing a new insertion.
+    // If you're updating an existing entity, you may need to pass the ID.
     return DeeplinkEntity(
         link = link,
         deviceId = deviceIdAndPackageName.deviceId,
@@ -25,7 +25,7 @@ fun DeeplinkDomainModel.toEntity(
     )
 }
 
-// Pour une liste
+// For a list
 fun toDomainModels(entities: List<DeeplinkEntity>): List<DeeplinkDomainModel> = entities.map { it.toDomainModel() }
 
 fun toEntities(deviceIdAndPackageName: DeviceIdAndPackageNameDomainModel, deeplinks: List<DeeplinkDomainModel>): List<DeeplinkEntity> =

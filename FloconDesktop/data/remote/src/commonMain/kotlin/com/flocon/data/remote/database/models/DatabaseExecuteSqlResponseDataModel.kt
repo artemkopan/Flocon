@@ -20,7 +20,7 @@ sealed interface DatabaseExecuteSqlResponseDataModel {
         val affectedCount: Int,
     ) : DatabaseExecuteSqlResponseDataModel
 
-    // Pour les objets singuliers, vous pouvez utiliser @Serializable object
+    // For singular objects, you can use @Serializable object
     @Serializable
     object RawSuccess : DatabaseExecuteSqlResponseDataModel
 

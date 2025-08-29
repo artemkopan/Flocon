@@ -89,7 +89,7 @@ private fun AppImage(
             modifier = modifier,
         )
     } else {
-        // Fallback : affiche une icône par défaut si iconEncoded est null ou invalide
+        // Fallback: display a default icon if iconEncoded is null or invalid
         Image(
             painter = painterResource(Res.drawable.smartphone),
             contentDescription = null,

@@ -19,15 +19,15 @@ internal fun mapToUi(deepLink: DeeplinkDomainModel): DeeplinkViewState = Deeplin
 )
 
 internal fun parseDeeplinkString(input: String): List<DeeplinkPart> {
-    val regex = "\\[([^\\[\\]]*)\\]".toRegex() // Regex pour trouver [quelquechose]
+    val regex = "\\[([^\\[\\]]*)\\]".toRegex() // Regex to find [something]
     val result = mutableListOf<DeeplinkPart>()
     var lastIndex = 0
 
     regex.findAll(input).forEach { matchResult ->
         val range = matchResult.range
-        val value = matchResult.groupValues[1] // Le contenu entre les crochets
+        val value = matchResult.groupValues[1] // The content between brackets
 
-        // 1. Ajouter la partie "Text" avant le [value]
+        // 1. Add the "Text" part before the [value]
         if (range.first > lastIndex) {
             val textContent = input.substring(lastIndex, range.first)
             if (textContent.isNotEmpty()) {
@@ -35,13 +35,13 @@ internal fun parseDeeplinkString(input: String): List<DeeplinkPart> {
             }
         }
 
-        // 2. Ajouter la partie "TextField"
+        // 2. Add the "TextField" part
         result.add(DeeplinkPart.TextField(value))
 
         lastIndex = range.last + 1
     }
 
-    // 3. Ajouter la dernière partie "Text" après le dernier [value] (s'il y en a une)
+    // 3. Add the last "Text" part after the last [value] (if there is one)
     if (lastIndex < input.length) {
         val remainingText = input.substring(lastIndex)
         if (remainingText.isNotEmpty()) {

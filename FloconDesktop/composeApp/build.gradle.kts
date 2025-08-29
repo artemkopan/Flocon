@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ksp) // Add KSP plugin
     alias(libs.plugins.room)
-    alias(libs.plugins.ktlint) // Ajout de Ktlint ici
+    alias(libs.plugins.ktlint) // Adding Ktlint here
     alias(libs.plugins.aboutLibraries)
 }
 
@@ -18,7 +18,7 @@ kotlin {
     jvmToolchain(23)
 
     compilerOptions {
-        // Pour Kotlin 1.9+
+        // For Kotlin 1.9+
         freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
         freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
         freeCompilerArgs.add("-Xcontext-parameters")
