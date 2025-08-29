@@ -3,6 +3,7 @@ package io.github.openflocon.flocondesktop.features.database.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,12 +14,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.openflocon.flocondesktop.features.database.DatabaseViewModel
 import io.github.openflocon.flocondesktop.features.database.model.DatabaseScreenState
 import io.github.openflocon.flocondesktop.features.database.model.DatabasesStateUiModel
+import io.github.openflocon.flocondesktop.features.database.model.DatabaseTableUiModel
+import io.github.openflocon.flocondesktop.features.database.model.DatabaseTablesState
 import io.github.openflocon.flocondesktop.features.database.model.DeviceDataBaseUiModel
 import io.github.openflocon.flocondesktop.features.database.model.QueryResultUiModel
 import io.github.openflocon.flocondesktop.features.database.model.previewDatabaseScreenState
@@ -35,6 +39,7 @@ fun DatabaseScreen(modifier: Modifier = Modifier) {
     val deviceDataBases by viewModel.deviceDataBases.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val recentQueries by viewModel.recentQueries.collectAsStateWithLifecycle()
+    val tablesState by viewModel.tablesState.collectAsStateWithLifecycle()
     DisposableEffect(viewModel) {
         viewModel.onVisible()
         onDispose {
@@ -48,6 +53,8 @@ fun DatabaseScreen(modifier: Modifier = Modifier) {
         clearQuery = viewModel::clearQuery,
         state = state,
         recentQueries = recentQueries,
+        tablesState = tablesState,
+        onTableSelected = viewModel::onTableSelected,
         modifier = modifier,
     )
 }
@@ -60,6 +67,8 @@ fun DatabaseScreen(
     clearQuery: () -> Unit,
     recentQueries: List<String>,
     state: DatabaseScreenState,
+    tablesState: DatabaseTablesState,
+    onTableSelected: (DatabaseTableUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var query by remember { mutableStateOf("") }
@@ -69,11 +78,29 @@ fun DatabaseScreen(
             FloconPageTopBar(
                 modifier = Modifier.fillMaxWidth(),
                 selector = {
-                    DatabaseSelectorView(
-                        databasesState = deviceDataBases,
-                        onDatabaseSelected = onDatabaseSelected,
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                    )
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        DatabaseSelectorView(
+                            databasesState = deviceDataBases,
+                            onDatabaseSelected = onDatabaseSelected,
+                            modifier = Modifier.weight(1f),
+                        )
+                        
+                        // Show table selector only when a database is selected and has tables
+                        when (deviceDataBases) {
+                            is DatabasesStateUiModel.WithContent -> {
+                                DatabaseTableSelectorView(
+                                    tablesState = tablesState,
+                                    onTableSelected = onTableSelected,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            else -> { /* Don't show table selector */ }
+                        }
+                    }
                 }
             ) { contentPadding ->
                 Column(
@@ -122,6 +149,8 @@ private fun DatabaseScreenPreview() {
             clearQuery = {},
             state = DatabaseScreenState.Idle,
             recentQueries = emptyList(),
+            tablesState = DatabaseTablesState.Empty,
+            onTableSelected = {},
         )
     }
 }
@@ -141,6 +170,14 @@ private fun DatabaseScreenPreview_Result() {
                 ),
             ),
             recentQueries = listOf("SELECT * FROM TOTO", "SELECT * FROM TATA"),
+            tablesState = DatabaseTablesState.WithContent(
+                tables = listOf(
+                    DatabaseTableUiModel("users", "db1"),
+                    DatabaseTableUiModel("posts", "db1"),
+                ),
+                selected = DatabaseTableUiModel("users", "db1"),
+            ),
+            onTableSelected = {},
         )
     }
 }
@@ -156,6 +193,8 @@ private fun DatabaseScreenPreview_Queries() {
             clearQuery = {},
             recentQueries = listOf("SELECT * FROM TOTO", "SELECT * FROM TATA"),
             state = previewDatabaseScreenState(),
+            tablesState = DatabaseTablesState.Loading,
+            onTableSelected = {},
         )
     }
 }

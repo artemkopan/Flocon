@@ -136,3 +136,34 @@ compose.desktop {
         }
     }
 }
+
+// Custom task to copy App bundle to desired output directory
+tasks.register<Sync>("copyAppToDistFolder") {
+    group = "distribution"
+    description = "Copies the generated App bundle to ../../../Flocon-dist directory"
+    
+    dependsOn("createDistributable")
+    
+    from(layout.buildDirectory.dir("compose/binaries/main/app"))
+    into(layout.projectDirectory.dir("../../../Flocon-dist"))
+    
+    doLast {
+        println("App bundle copied to: ../../../Flocon-dist")
+    }
+}
+
+// Custom task to copy DMG file to desired output directory
+tasks.register<Copy>("copyDmgToDistFolder") {
+    group = "distribution"
+    description = "Copies the generated DMG file to ../../../Flocon-dist directory"
+    
+    dependsOn("packageDmg")
+    
+    from(layout.buildDirectory.dir("compose/binaries/main/dmg"))
+    into(project.file("../../../Flocon-dist"))
+    include("*.dmg")
+    
+    doLast {
+        println("DMG file(s) copied to: ../../../Flocon-dist")
+    }
+}
