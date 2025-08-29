@@ -35,10 +35,10 @@ class ServerJvm : Server {
     private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? =
         null
     private val isStarted = AtomicBoolean(false)
-    private val _activeSessions =
+    private val _activeDevices =
         MutableStateFlow(emptyMap<FloconDeviceIdAndPackageNameDataModel, WebSocketSession>())
 
-    override val activeDevices = _activeSessions.map { it.keys }
+    override val activeDevices = _activeDevices.map { it.keys }
         .distinctUntilChanged()
 
     override fun start(port: Int) {
@@ -74,7 +74,7 @@ class ServerJvm : Server {
                                                 packageName = floconIncomingMessageDataModel.appPackageName,
                                                 appInstance = floconIncomingMessageDataModel.appInstance,
                                             )
-                                            _activeSessions.update {
+                                            _activeDevices.update {
                                                 it + (device to currentSession)
                                             }
                                             // println("+ new client : ${floconIncomingMessageDataModel.deviceId}")
@@ -93,7 +93,7 @@ class ServerJvm : Server {
 
                                     is Frame.Close -> {
                                         val reason = frame.readReason()
-                                        _activeSessions.update { map ->
+                                        _activeDevices.update { map ->
                                             map.filterValues { it != currentSession }
                                         }
                                         println("WebSocket connection closed: ${reason?.message}")
@@ -115,7 +115,7 @@ class ServerJvm : Server {
                         } finally {
                             // This block will always be executed when the coroutine ends,
                             // whether the connection was closed cleanly or due to an error.
-                            _activeSessions.update { map ->
+                            _activeDevices.update { map ->
                                 map.filterValues { it != currentSession }
                             }
                             println("WebSocket : Session removed from active sessions.")
@@ -144,7 +144,7 @@ class ServerJvm : Server {
         deviceIdAndPackageName: FloconDeviceIdAndPackageNameDataModel,
         message: FloconOutgoingMessageDataModel,
     ) {
-        val session = _activeSessions.value[deviceIdAndPackageName]
+        val session = _activeDevices.value[deviceIdAndPackageName]
         if (session != null) {
             try {
                 val jsonMessage =
@@ -157,7 +157,7 @@ class ServerJvm : Server {
             } catch (e: Exception) {
                 println("Error sending message to client: ${e.message}")
                 // The session might have closed unexpectedly
-                _activeSessions.update { map ->
+                _activeDevices.update { map ->
                     map.filterKeys { it != deviceIdAndPackageName }
                 }
             }
