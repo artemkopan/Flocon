@@ -140,15 +140,15 @@ compose.desktop {
 // Custom task to copy DMG file to desired output directory
 tasks.register<Copy>("copyDmgToDistFolder") {
     group = "distribution"
-    description = "Copies the generated DMG file to ../../dist directory"
+    description = "Copies the generated DMG file to ../../../FloconDistribution directory"
     
     dependsOn("packageDmg")
     
     from(layout.buildDirectory.dir("compose/binaries/main/dmg"))
-    into(project.file("../../dist"))
+    into(project.file("../../../FloconDistribution"))
     include("*.dmg")
     
     doLast {
-        println("DMG file(s) copied to: ../../dist")
+        println("DMG file(s) copied to: ../../../FloconDistribution")
     }
 }
