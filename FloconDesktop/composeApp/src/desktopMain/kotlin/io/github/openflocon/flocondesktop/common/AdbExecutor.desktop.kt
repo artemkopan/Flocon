@@ -34,8 +34,7 @@ actual fun localFindAdbPath(): String? {
     } catch (e: IOException) {
         AdbLogger.logger.warn(LogCategory.DEVICE_CONNECTION, "'adb' not found in system PATH directly", exception = e)
         // Fall through to search in SDK
-    } catch (e: InterruptedException) {
-        Thread.currentThread().interrupt()
+    } catch (_: InterruptedException) {
         AdbLogger.logger.warn(LogCategory.DEVICE_CONNECTION, "Process interrupted while checking 'adb' in system PATH")
     }
 
@@ -55,10 +54,11 @@ actual fun localFindAdbPath(): String? {
         val platformToolsPath = File(sdkPath, "platform-tools")
         val adbExecutable = File(platformToolsPath, "adb")
         if (adbExecutable.exists() && adbExecutable.canExecute()) {
+            AdbLogger.logger.info(LogCategory.DEVICE_CONNECTION, "Adb path was found: ${adbExecutable.absolutePath}")
             return adbExecutable.absolutePath
         }
     }
-
+    AdbLogger.logger.error(LogCategory.DEVICE_CONNECTION, "Adb path not found")
     return null
 }
 

@@ -24,6 +24,6 @@ class SettingsDataSourcePrefs : SettingsDataSource {
     override val adbPath: Flow<String?> = flowSettings.getStringOrNullFlow(ADB_PATH)
 
     companion object {
-        private const val ADB_PATH = "adb_path"
+        private const val ADB_PATH = "adb_path_v2"
     }
 }

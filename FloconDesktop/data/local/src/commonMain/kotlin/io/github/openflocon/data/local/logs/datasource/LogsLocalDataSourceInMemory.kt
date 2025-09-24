@@ -12,7 +12,7 @@ class LogsLocalDataSourceInMemory : LogsLocalDataSource {
     override fun observeLogEntries(): Flow<List<LogEntry>> = _logs
 
     override fun addLog(logEntry: LogEntry) {
-        _logs.value = _logs.value + logEntry
+        _logs.value += logEntry
     }
 
     override fun clearLogs() {
