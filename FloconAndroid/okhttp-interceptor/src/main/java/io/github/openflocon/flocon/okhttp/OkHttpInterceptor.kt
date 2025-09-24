@@ -86,7 +86,7 @@ class FloconOkhttpInterceptor() : Interceptor {
 
         try {
             val response = if (isMocked) {
-                executeMock(request = request, mock = mockConfig)
+                executeMock(request = request, mock = mockConfig!!)
             } else {
                 floconNetworkPlugin.badQualityConfig?.let { badQualityConfig ->
                     executeBadQuality(

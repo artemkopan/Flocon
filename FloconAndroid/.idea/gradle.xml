@@ -10,15 +10,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/flocon" />
             <option value="$PROJECT_DIR$/flocon-base" />
             <option value="$PROJECT_DIR$/flocon-no-op" />
-            <option value="$PROJECT_DIR$/grpc" />
-            <option value="$PROJECT_DIR$/grpc/grpc-interceptor" />
-            <option value="$PROJECT_DIR$/grpc/grpc-interceptor-base" />
-            <option value="$PROJECT_DIR$/grpc/grpc-interceptor-lite" />
-            <option value="$PROJECT_DIR$/ktor-interceptor" />
             <option value="$PROJECT_DIR$/okhttp-interceptor" />
           </set>
         </option>
